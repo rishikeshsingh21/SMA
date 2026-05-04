@@ -1,0 +1,154 @@
+Experiment No. 2
+TITLE
+
+Data Collection from Social Media Platforms using Web Scraping, Crawling, and Parsing
+
+AIM
+
+To collect and capture data from websites using web scraping, crawling, and parsing techniques in Python for business applications.
+
+THEORY
+1. Introduction
+
+Social Media Analytics involves extracting useful insights from platforms like Facebook, Twitter, YouTube, and LinkedIn.
+Data collection is the first and most important step because all analysis depends on structured data.
+
+Collected data includes:
+
+Posts
+Comments
+Likes & Shares
+Reviews
+Hashtags
+
+Businesses use this data for:
+
+Customer behavior analysis
+Brand monitoring
+Competitor analysis
+Market trends
+2. Web Scraping
+
+Web scraping is an automated process to extract data from websites.
+
+It involves:
+
+Sending request to webpage
+Getting HTML content
+Parsing structure
+Extracting useful data
+3. Key Techniques
+a) Scraping
+
+Extracting specific data from a webpage
+Example:
+
+Product reviews
+Blog comments
+b) Crawling
+
+Automatically visiting multiple pages using links
+
+c) Parsing
+
+Converting HTML into structured format (DOM) to extract data easily
+
+4. Tools Used
+Requests Library
+Sends HTTP request
+Gets webpage content
+BeautifulSoup Library
+Parses HTML
+Extracts specific elements
+
+5. Web Scraping Workflow
+
+Connect to Website
+Use requests.get()
+Check status code (200 = success)
+
+Parse HTML
+Use BeautifulSoup
+
+Extract Data
+Use find() / find_all()
+
+Store Data
+List / CSV / Database
+
+IMPLEMENTATION STEPS
+
+Step 1: Install Libraries
+pip install requests beautifulsoup4
+
+Step 2: Import Libraries
+import requests
+from bs4 import BeautifulSoup
+
+Step 3: Connect to Website
+url = "https://quotes.toscrape.com/"
+response = requests.get(url)
+
+print("Status Code:", response.status_code)
+
+Step 4: Parse HTML
+soup = BeautifulSoup(response.text, "html.parser")
+
+Step 5: Extract Data
+quotes = soup.find_all("span", class_="text")
+authors = soup.find_all("small", class_="author")
+
+data = []
+
+for i in range(len(quotes)):
+    quote = quotes[i].get_text()
+    author = authors[i].get_text()
+    
+    data.append({
+        "Quote": quote,
+        "Author": author
+    })
+
+
+Step 6: Display Data
+for item in data:
+    print(item["Quote"], "-", item["Author"])
+
+
+Step 7: Save Data (Optional but Good for Marks)
+import csv
+
+with open("quotes.csv", "w", newline="", encoding="utf-8") as file:
+    writer = csv.DictWriter(file, fieldnames=["Quote", "Author"])
+    writer.writeheader()
+    writer.writerows(data)
+
+
+
+# Step 7: Visualization
+
+import matplotlib.pyplot as plt
+from collections import Counter
+
+# Count number of quotes per author
+author_list = [author.get_text() for author in authors]
+author_count = Counter(author_list)
+
+# Take top 10 authors
+top_authors = author_count.most_common(10)
+
+names = [item[0] for item in top_authors]
+counts = [item[1] for item in top_authors]
+
+# Plot graph
+plt.figure()
+plt.bar(names, counts)
+
+plt.xlabel("Authors")
+plt.ylabel("Number of Quotes")
+plt.title("Top Authors by Number of Quotes")
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+plt.show()
