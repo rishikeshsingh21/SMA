@@ -1,0 +1,35 @@
+Aim: To Implement The program for demonstrating a load-balancing approach in a distributed environment.
+
+
+
+
+Theory: A load balancer is a device that acts as a reverse proxy and distributes network or application traffic 
+across a number of servers. Load adjusting is the approach to conveying load units (i.e., 
+occupations/assignments) across the organization which is associated with the distributed system. Load 
+adjusting should be possible by the load balancer. The load balancer is a framework that can deal with the 
+load and is utilized to disperse the assignments to the servers. The load balancers allocate the primary 
+undertaking to the main server and the second assignment to the second server. 
+
+Purpose of Load Balancing in Distributed Systems: 
+Security
+Authenticate User Access:
+rotect against DDoS attacks:
+Performance:
+SSL Offload:
+Traffic Compression:
+
+
+Load Balancing Approaches: 
+● Round Robin 
+● Least Connections 
+● Least Time 
+● Hash 
+● IP Hash 
+
+Advantages of Load Balancing: 
+● Load balancers minimize server response time and maximize throughput. 
+● Load balancer ensures high availability and reliability by sending requests only to online servers. 
+● Load balancers do continuous health checks to monitor the server’s capability of handling the request.
+
+
+Both diagram 
