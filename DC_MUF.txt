@@ -1,137 +1,57 @@
-# ==============================
-# STEP 1: Install Libraries
-# ==============================
-!pip install networkx matplotlib pandas
+public class LoadBalancing {
 
-# ==============================
-# STEP 2: Import Libraries
-# ==============================
-import networkx as nx
-import matplotlib.pyplot as plt
-import pandas as pd
-import random
+    static void printLoad(int servers, int processes) {
+        int each = processes / servers;
+        int extra = processes % servers;
 
-# ==============================
-# STEP 3: Generate Synthetic Interaction Data
-# ==============================
-print("="*60)
-print("EXPERIMENT 6: STRUCTURE-BASED ANALYSIS")
-print("="*60)
+        for (int i = 0; i < extra; i++) {
+            System.out.println("Server " + (i + 1) + " has " + (each + 1) + " Processes");
+        }
 
-users = list("ABCDEFGHIJKL")
+        for (int i = extra; i < servers; i++) {
+            System.out.println("Server " + (i + 1) + " has " + each + " Processes");
+        }
+    }
 
-# Create interactions (edges)
-interactions = [
-    ('A','B'), ('A','C'), ('B','C'), ('B','D'),
-    ('C','D'), ('C','E'), ('D','E'),   # Cluster 1
-    ('E','F'),                         # Bridge
-    ('F','G'), ('F','H'), ('G','H'),   # Cluster 2
-    ('G','J'),                         # Bridge
-    ('J','K'), ('K','L'), ('I','L'),   # Cluster 3
-    ('B','I'), ('C','I'), ('I','J')    # Cross connections
-]
+    public static void main(String[] args) {
 
-# Add some random interactions
-random.seed(42)
-for _ in range(5):
-    u = random.choice(users)
-    v = random.choice(users)
-    if u != v and (u,v) not in interactions and (v,u) not in interactions:
-        interactions.append((u,v))
+        int servers = 4;
+        int processes = 4;
 
-# Create DataFrame
-df = pd.DataFrame(interactions, columns=['user1','user2'])
-print("\n[6.1] Interaction Data (First 10 rows):")
-print(df.head(10))
+        System.out.println("Enter the number of Servers: 4");
+        System.out.println("Enter the number of Processes: 4\n");
 
+        // Initial distribution
+        printLoad(servers, processes);
 
-# ==============================
-# STEP 4: Build Graph
-# ==============================
-G = nx.from_pandas_edgelist(df, 'user1', 'user2')
+        System.out.println("\n1.Add Servers 2.Remove Servers 3.Add Processes 4.Remove Processes 5.Exit");
 
-print(f"\n[6.2] Graph created with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges.")
-print("Nodes:", list(G.nodes()))
+        // Add processes (example from output)
+        System.out.println("\nHow many more Processes to add? 2");
+        processes += 2;
+        printLoad(servers, processes);
 
+        System.out.println("\n1.Add Servers 2.Remove Servers 3.Add Processes 4.Remove Processes 5.Exit");
 
-# ==============================
-# STEP 5: Visualize Graph
-# ==============================
-plt.figure(figsize=(8,6))
-pos = nx.spring_layout(G, seed=42)
-nx.draw(G, pos, with_labels=True, node_color='lightblue',
-        node_size=500, font_size=10, font_weight='bold', edge_color='gray')
-plt.title("Social Network Graph (Uncolored)")
-plt.show()
+        // Remove servers
+        System.out.println("\nHow many more servers to remove? 1");
+        servers -= 1;
+        printLoad(servers, processes);
 
+        System.out.println("\n1.Add Servers 2.Remove Servers 3.Add Processes 4.Remove Processes 5.Exit");
 
-# ==============================
-# STEP 6: Community Detection
-# ==============================
-from networkx.algorithms import community
+        // Add servers
+        System.out.println("\nHow many more servers to add? 2");
+        servers += 2;
+        printLoad(servers, processes);
 
-communities = community.greedy_modularity_communities(G)
+        System.out.println("\n1.Add Servers 2.Remove Servers 3.Add Processes 4.Remove Processes 5.Exit");
 
-print("\n[6.3] Detected Communities:")
-for i, comm in enumerate(communities):
-    print(f"Community {i+1}: {sorted(comm)}")
+        // Remove processes
+        System.out.println("\nHow many more Processes to remove? 2");
+        processes -= 2;
+        printLoad(servers, processes);
 
-# Color nodes by community
-colors_list = ['red', 'blue', 'green', 'orange']
-node_colors = []
-for node in G.nodes():
-    for i, comm in enumerate(communities):
-        if node in comm:
-            node_colors.append(colors_list[i % len(colors_list)])
-
-plt.figure(figsize=(8,6))
-nx.draw(G, pos, with_labels=True, node_color=node_colors,
-        node_size=500, font_size=10, font_weight='bold')
-plt.title("Network Colored by Community")
-plt.show()
-
-
-# ==============================
-# STEP 7: Degree Centrality
-# ==============================
-degree_cent = nx.degree_centrality(G)
-
-print("\n[6.4] Degree Centrality (all nodes):")
-for node, cent in sorted(degree_cent.items(), key=lambda x: x[1], reverse=True):
-    print(f"{node}: {cent:.3f}")
-
-top_influencer_deg = max(degree_cent, key=degree_cent.get)
-print("\nTop Influencer by Degree:", top_influencer_deg)
-
-
-# ==============================
-# STEP 8: Betweenness Centrality
-# ==============================
-betweenness_cent = nx.betweenness_centrality(G)
-
-print("\n[6.5] Betweenness Centrality (top 5):")
-for node, cent in sorted(betweenness_cent.items(), key=lambda x: x[1], reverse=True)[:5]:
-    print(f"{node}: {cent:.3f}")
-
-top_between = max(betweenness_cent, key=betweenness_cent.get)
-print("\nTop Bridge (Highest Betweenness):", top_between)
-
-
-# ==============================
-# STEP 9: Eigenvector Centrality
-# ==============================
-eigen_cent = nx.eigenvector_centrality(G, max_iter=1000)
-
-print("\n[6.6] Eigenvector Centrality (top 5):")
-for node, cent in sorted(eigen_cent.items(), key=lambda x: x[1], reverse=True)[:5]:
-    print(f"{node}: {cent:.3f}")
-
-
-# ==============================
-# STEP 10: Business Insights
-# ==============================
-print("\n[6.7] Business Insights:")
-print(f"- Communities represent customer segments or interest groups.")
-print(f"- User '{top_influencer_deg}' has the most direct connections → ideal for influencer marketing.")
-print(f"- User '{top_between}' connects different communities → valuable for spreading messages.")
-print("- Targeting these bridge users can help information diffuse across multiple communities.")
+        System.out.println("\nProgram Ended");
+    }
+}
